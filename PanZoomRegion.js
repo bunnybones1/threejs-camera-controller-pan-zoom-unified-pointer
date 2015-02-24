@@ -63,10 +63,6 @@ function PanZoomRegion(camera) {
 	function zoom(x, y, zoom) {
 		var ratioX = x / fullWidth;
 		var ratioY = y / fullHeight;
-		if(zoom > 1) {
-			ratioX = 1 - ratioX;
-			ratioY = 1 - ratioY;
-		}
 		var focusX = left + ratioX * (right - left);
 		var focusY = top + ratioY * (bottom - top);
 		left = ((left - focusX) * zoom) + focusX;

@@ -1,99 +1,85 @@
-var Signal = require('signals').Signal;
+var CameraRegionController = require('./CameraRegionController');
+var PanZoomRegion = require('./PanZoomRegion');
+
+var INTERNAL = 0,
+	EXTERNAL = 1;
+
 function Controller(opts) {
-	var pointers = opts.pointers;
-	var onMouseWheelSignal = opts.mouseWheel ? opts.mouseWheel.onMouseWheelSignal : null;
+	var camera = opts.camera;
+	var fovMin = opts.fovMin || 50;
+	var fovMax = opts.fovMax || 60;
+	var panSpeed = panSpeed || .2;
 
-	var panSignal = new Signal();
-	var zoomSignal = new Signal();
+	var panZoomRegion = new PanZoomRegion(camera);
 
-	var mousePosition = [0, 0];
+	var regionController = new CameraRegionController({
+		pointers: opts.pointers,
+		mouseWheel: opts.mouseWheel
+	});
 
-	var activePointers = [];
-	var positions = [];
-	for (var i = 0; i < 100; i++) {
-		positions.push(0, 0);
-	};
-
-	function onPointerDown(x, y, id) {
-		if(id === 0 && activePointers.length < 2) {
-			mousePosition[0] = x;
-			mousePosition[1] = y;
-		}
-		if(activePointers.length >= 2) return;
-		positions[id*2] = x;
-		positions[id*2+1] = y;
-
-		activePointers.push(id);
+	function panMovement(x, y) {
+		camera.position.x += x * panSpeed;
+		camera.position.y += -y * panSpeed;
 	}
 
-	function onPointerMove(x, y) {
-		mousePosition[0] = x;
-		mousePosition[1] = y;
+	function panRegion(x, y) {
+		panZoomRegion.pan(x, y);
+		camera.updateProjectionMatrix();
 	}
 
-	function len(x, y) {
-		return Math.sqrt(x*x+y*y);
-	}
+	regionController.panSignal.add(panMovement);
 
-	function onPointerDrag(x, y, id) {
-		if(id === 0 && activePointers.length < 2) {
-			mousePosition[0] = x;
-			mousePosition[1] = y;
-		}
-		switch(activePointers.length) {
-			case 1:
-				panSignal.dispatch(
-					positions[id*2] - x,
-					positions[id*2+1] - y
-				);
+	var currentZoomMode = EXTERNAL;
+	regionController.zoomSignal.add(zoomFov);
+
+	function changeZoomMode(mode) {
+		if(currentZoomMode === mode) return;
+		switch(mode) {
+			case EXTERNAL:
+				regionController.zoomSignal.remove(zoomRegion);
+				regionController.zoomSignal.add(zoomFov);
+				regionController.panSignal.remove(panRegion);
+				regionController.panSignal.add(panMovement);
 				break;
-			case 2:
-				panSignal.dispatch(
-					(positions[id*2] - x * .5),
-					(positions[id*2+1] - y * .5)
-				);
-				var zoom = len(
-						positions[id] - positions[(id+2)%4], 
-						positions[id+1] - positions[(id+3)%4]
-					) / len(
-						x - positions[(id+2)%4], 
-						y - positions[(id+3)%4]
-					);
-				zoomSignal.dispatch(
-					(positions[0] + positions[2]) * .5,
-					(positions[1] + positions[3]) * .5,
-					zoom
-				);
+			case INTERNAL:
+				regionController.zoomSignal.remove(zoomFov);
+				regionController.zoomSignal.add(zoomRegion);
+				regionController.panSignal.remove(panMovement);
+				regionController.panSignal.add(panRegion);
 				break;
 		}
-		positions[id*2] = x;
-		positions[id*2+1] = y;
+		currentZoomMode = mode;
 	}
-
-	function onPointerUp(x, y, id) {
-		positions[id*2] = x;
-		positions[id*2+1] = y;
-		var index = activePointers.indexOf(id);
-		if(index !== -1) activePointers.splice(index);
-	}
-
-	function onMouseWheelZoom(delta) {
-		zoomSignal.dispatch(
-			mousePosition[0], 
-			mousePosition[1], 
-			(3000 + delta) / 3000
-		);
-	}
-
-
-	pointers.onPointerDownSignal.add(onPointerDown);
-	pointers.onPointerMoveSignal.add(onPointerMove);
-	pointers.onPointerDragSignal.add(onPointerDrag);
-	pointers.onPointerUpSignal.add(onPointerUp);
-
-	onMouseWheelSignal.add(onMouseWheelZoom);
+	function zoomFov(x, y, zoom) {
+		camera.fov = camera.fov * zoom;
+		if(camera.fov < fovMin) changeZoomMode(INTERNAL);
 	
-	this.panSignal = panSignal;
-	this.zoomSignal = zoomSignal;
+		camera.fov = Math.max(1, Math.min(fovMax, camera.fov));
+
+		// console.log('fov', camera.fov);
+		camera.updateProjectionMatrix();
+	}
+
+	function zoomRegion(x, y, zoom, invertOut) {
+		if(invertOut && zoom > 1) {
+			x = fullWidth - x;
+			y = fullHeight - y;
+		}
+		panZoomRegion.zoom(x, y, zoom);
+		if(panZoomRegion.zoomValue > 1) changeZoomMode(EXTERNAL);
+		panZoomRegion.zoomValue = Math.min(1, panZoomRegion.zoomValue);
+		// console.log('regionZoom', panZoomRegion.zoomValue);
+	}
+
+	var fullWidth, fullHeight;
+	function setSize(w, h) {
+		fullWidth = w;
+		fullHeight = h;
+		panZoomRegion.setSize(w, h);
+	}
+
+	this.setSize = setSize;
+
+
 }
 module.exports = Controller;
