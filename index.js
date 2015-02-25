@@ -87,5 +87,7 @@ function Controller(opts) {
 
 	this.setSize = setSize;
 	this.precomposeViewport = precomposeViewport;
+	this.panSignal = CameraRegionController.panSignal;
+	this.zoomSignal = CameraRegionController.zoomSignal;
 }
 module.exports = Controller;

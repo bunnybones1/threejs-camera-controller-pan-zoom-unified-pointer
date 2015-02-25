@@ -102,5 +102,7 @@ function Controller(opts) {
 	
 	this.panSignal = panSignal;
 	this.zoomSignal = zoomSignal;
+	this.panSignal = panSignal;
+	this.zoomSignal = zoomSignal;
 }
 module.exports = Controller;
