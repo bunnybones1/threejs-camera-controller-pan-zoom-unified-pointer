@@ -10,13 +10,13 @@
     "url": "https://github.com/bunnybones1"
   },
   "dependencies": {
-    "input-mousewheel": "^1.0.0",
-    "input-unified-pointers": "^2.1.3",
     "signals": "^1.0.0"
   },
   "devDependencies": {
     "loadandrunscripts": "^1.0.0",
-    "threejs-managed-view": "^4.0.1"
+    "threejs-managed-view": "^4.0.1",
+    "input-mousewheel": "^1.0.0",
+    "input-unified-pointers": "^2.1.3"
   },
   "scripts": {
     "test": "beefy test.js --live --open"
