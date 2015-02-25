@@ -10,7 +10,9 @@ function Controller(opts) {
 	var fovMax = opts.fovMax || 60;
 	var panSpeed = panSpeed || .2;
 
+
 	var panZoomRegion = new PanZoomRegion(camera);
+
 
 	var regionController = new CameraRegionController({
 		pointers: opts.pointers,
@@ -71,6 +73,10 @@ function Controller(opts) {
 		// console.log('regionZoom', panZoomRegion.zoomValue);
 	}
 
+	function precomposeViewport(otherCamera){
+		panZoomRegion.precomposeViewport(otherCamera);
+	}
+
 	var fullWidth, fullHeight;
 	function setSize(w, h) {
 		fullWidth = w;
@@ -78,8 +84,8 @@ function Controller(opts) {
 		panZoomRegion.setSize(w, h);
 	}
 
+
 	this.setSize = setSize;
-
-
+	this.precomposeViewport = precomposeViewport;
 }
 module.exports = Controller;

@@ -23,6 +23,19 @@ function PanZoomRegion(camera) {
 		);
 	}
 
+	function precomposeViewport(otherCamera) {
+		var outerX = otherCamera.x / otherCamera.fullWidth;
+		var outerY = otherCamera.y / otherCamera.fullWidth;
+		var outerWidth = otherCamera.width / otherCamera.fullWidth;
+		var outerHeight = otherCamera.height / otherCamera.fullWidth;
+		
+		camera.x = outerX + left * outerWidth;
+		camera.y = outerY + top * outerHeight;
+		camera.width = outerWidth * (right-left);
+		camera.height = outerHeight * (bottom-top);
+		camera.updateProjectionMatrix();
+	}
+
 	function contain() {
 		var overlap = Math.min(left, 0);
 		left -= overlap;
@@ -86,6 +99,7 @@ function PanZoomRegion(camera) {
 
 	this.pan = pan;
 	this.zoom = zoom;
+	this.precomposeViewport = precomposeViewport;
 	this.setSize = setSize;
 }
 

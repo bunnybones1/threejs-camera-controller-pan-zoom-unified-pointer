@@ -7,6 +7,7 @@ function onReady() {
 	var Controller = require('./');
 
 	var view = new View();
+	view.renderer.setClearColor(0xffafaf);
 	// view.renderManager.skipFrames = 10;
 	var scene = view.scene;
 	var camera = view.camera;
