@@ -122,7 +122,7 @@ function Controller(opts) {
 				onUpdateScope: this
 			});
 		} else {
-			panZoomRegion.reset(animate);
+			panZoomRegion.reset();
 			camera.fov = fovMax;
 			camera.updateProjectionMatrix();
 		}

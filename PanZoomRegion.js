@@ -107,6 +107,8 @@ function PanZoomRegion(opts) {
 		right = 1;
 		top = 0;
 		bottom = 1;
+
+		setCamera();
 	}
 
 	this.pan = pan;
