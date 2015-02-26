@@ -15,6 +15,7 @@ function Controller(opts) {
 	};
 
 	function onPointerDown(x, y, id) {
+		if(activePointers.indexOf(id) !== -1) return;
 		if(id === 0 && activePointers.length < 2) {
 			mousePosition[0] = x;
 			mousePosition[1] = y;
@@ -93,16 +94,31 @@ function Controller(opts) {
 	}
 
 
-	pointers.onPointerDownSignal.add(onPointerDown);
-	pointers.onPointerMoveSignal.add(onPointerMove);
-	pointers.onPointerDragSignal.add(onPointerDrag);
-	pointers.onPointerUpSignal.add(onPointerUp);
+	var active = false;
 
-	onMouseWheelSignal.add(onMouseWheelZoom);
-	
+	function setState(state) {
+		if(state === active) return;
+		active = state;
+		if(state) {
+			pointers.onPointerDownSignal.add(onPointerDown);
+			pointers.onPointerMoveSignal.add(onPointerMove);
+			pointers.onPointerDragSignal.add(onPointerDrag);
+			pointers.onPointerUpSignal.add(onPointerUp);
+			onMouseWheelSignal.add(onMouseWheelZoom);
+		} else {
+			pointers.onPointerDownSignal.remove(onPointerDown);
+			pointers.onPointerMoveSignal.remove(onPointerMove);
+			pointers.onPointerDragSignal.remove(onPointerDrag);
+			pointers.onPointerUpSignal.remove(onPointerUp);
+			onMouseWheelSignal.remove(onMouseWheelZoom);
+		}
+	}
+
 	this.panSignal = panSignal;
 	this.zoomSignal = zoomSignal;
 	this.panSignal = panSignal;
 	this.zoomSignal = zoomSignal;
+	this.setState = setState;
+	this.onPointerDown = onPointerDown;
 }
 module.exports = Controller;

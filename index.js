@@ -1,6 +1,6 @@
 var CameraRegionController = require('./CameraRegionController');
 var PanZoomRegion = require('./PanZoomRegion');
-
+var gsap = require('gsap');
 var INTERNAL = 0,
 	EXTERNAL = 1;
 
@@ -8,10 +8,14 @@ function Controller(opts) {
 	var camera = opts.camera;
 	var fovMin = opts.fovMin || 50;
 	var fovMax = opts.fovMax || 60;
-	var panSpeed = panSpeed || .2;
+	var panSpeed = panSpeed || 0.2;
+	var zoomMax = zoomMax || 0.2;
 
 
-	var panZoomRegion = new PanZoomRegion(camera);
+	var panZoomRegion = new PanZoomRegion({
+		camera: camera,
+		zoomMax: zoomMax
+	});
 
 
 	var regionController = new CameraRegionController({
@@ -86,10 +90,50 @@ function Controller(opts) {
 		panZoomRegion.setSize(w, h);
 	}
 
+	function setState(state) {
+		regionController.setState(state);
+	}
+
+	this.animationValue = 0;
+	this.reset = function(animate) {
+		gsap.killTweensOf(camera);
+		gsap.killTweensOf(this);
+		if(animate) {
+			this.animationValue = 0;
+			gsap.to(this, 2, {
+				fov: fovMax,
+				onUpdate: function() {
+					zoomFov(
+						fullWidth * .5,
+						fullHeight * .5,
+						1
+					);
+				}
+			})
+			gsap.to(this, 2, {
+				animationValue: 1,
+				onUpdate: function() {
+					zoomRegion(
+						fullWidth * .5,
+						fullHeight * .5,
+						1 + (this.animationValue * (1-panZoomRegion.zoomValue)) + .00001
+					);
+				},
+				onUpdateScope: this
+			});
+		} else {
+			panZoomRegion.reset(animate);
+			camera.fov = fovMax;
+			camera.updateProjectionMatrix();
+		}
+	}
 
 	this.setSize = setSize;
 	this.precomposeViewport = precomposeViewport;
 	this.panSignal = regionController.panSignal;
 	this.zoomSignal = regionController.zoomSignal;
+	this.setState = setState;
+	this.onPointerDown = regionController.onPointerDown;
+	
 }
 module.exports = Controller;

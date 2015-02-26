@@ -1,11 +1,14 @@
-function PanZoomRegion(camera) {
-	
+function PanZoomRegion(opts) {
+
+	var camera = opts.camera;
+
 	this.zoomValue = 1;
 
 	var fullWidth = 100,
 		fullHeight = 100,
 		width = 1,
 		height = 1,
+		zoomMax = opts.zoomMax || 0.000001,
 		aspect = 1,
 		left = 0,
 		right = 1,
@@ -75,6 +78,7 @@ function PanZoomRegion(camera) {
 	}
 
 	function zoom(x, y, zoom) {
+		if(this.zoomValue <= zoomMax && zoom < 1) return;
 		var ratioX = x / fullWidth;
 		var ratioY = y / fullHeight;
 		var focusX = left + ratioX * (right - left);
@@ -98,10 +102,18 @@ function PanZoomRegion(camera) {
 		setCamera();
 	}
 
+	function reset() {
+		left = 0;
+		right = 1;
+		top = 0;
+		bottom = 1;
+	}
+
 	this.pan = pan;
 	this.zoom = zoom;
 	this.precomposeViewport = precomposeViewport;
 	this.setSize = setSize;
+	this.reset = reset;
 }
 
 module.exports = PanZoomRegion;
