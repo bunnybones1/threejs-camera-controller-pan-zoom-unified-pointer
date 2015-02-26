@@ -19,10 +19,12 @@ function Controller(opts) {
 		mouseWheel: opts.mouseWheel
 	});
 
-	function panMovement(x, y) {
+	function _panMovement(x, y) {
 		camera.position.x += x * panSpeed;
 		camera.position.y += -y * panSpeed;
 	}
+	
+	var panMovement = opts.panMap || _panMovement;
 
 	function panRegion(x, y) {
 		panZoomRegion.pan(x, y);
@@ -87,7 +89,7 @@ function Controller(opts) {
 
 	this.setSize = setSize;
 	this.precomposeViewport = precomposeViewport;
-	this.panSignal = CameraRegionController.panSignal;
-	this.zoomSignal = CameraRegionController.zoomSignal;
+	this.panSignal = regionController.panSignal;
+	this.zoomSignal = regionController.zoomSignal;
 }
 module.exports = Controller;

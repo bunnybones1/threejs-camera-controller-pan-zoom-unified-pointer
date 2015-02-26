@@ -56,6 +56,7 @@ function PanZoomRegion(camera) {
 
 		top = Math.max(top, 0);
 		bottom = Math.min(bottom, 1);
+
 	}
 
 
