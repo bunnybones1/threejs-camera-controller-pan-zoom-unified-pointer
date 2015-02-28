@@ -32,6 +32,8 @@ function PanZoomRegion(opts) {
 		var outerWidth = otherCamera.width / otherCamera.fullWidth;
 		var outerHeight = otherCamera.height / otherCamera.fullWidth;
 		
+		camera.fullWidth = otherCamera.fullWidth;
+		camera.fullHeight = otherCamera.fullHeight;
 		camera.x = outerX + left * outerWidth;
 		camera.y = outerY + top * outerHeight;
 		camera.width = outerWidth * (right-left);
