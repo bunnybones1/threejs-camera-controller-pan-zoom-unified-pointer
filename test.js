@@ -37,6 +37,7 @@ function onReady() {
 		pointers: pointers,
 		mouseWheel: MouseWheel
 	});
+	controller.setState(true);
 
 	view.onResizeSignal.add(controller.setSize);
 	var size = view.getSize();
