@@ -1,6 +1,7 @@
 function PanZoomRegion(opts) {
 
 	var camera = opts.camera;
+	var autoSetCamera = opts.autoSetCamera !== false;
 
 	this.zoomValue = 1;
 
@@ -26,18 +27,13 @@ function PanZoomRegion(opts) {
 		);
 	}
 
-	function precomposeViewport(otherCamera) {
-		var outerX = otherCamera.x / otherCamera.fullWidth;
-		var outerY = otherCamera.y / otherCamera.fullWidth;
-		var outerWidth = otherCamera.width / otherCamera.fullWidth;
-		var outerHeight = otherCamera.height / otherCamera.fullWidth;
-		
-		camera.fullWidth = otherCamera.fullWidth;
-		camera.fullHeight = otherCamera.fullHeight;
-		camera.x = outerX + left * outerWidth;
-		camera.y = outerY + top * outerHeight;
-		camera.width = outerWidth * (right-left);
-		camera.height = outerHeight * (bottom-top);
+	function precomposeViewport(outer) {
+		camera.fullWidth = outer.fullWidth;
+		camera.fullHeight = outer.fullHeight;
+		camera.x = outer.x + left * outer.width;
+		camera.y = outer.y + top * outer.height;
+		camera.width = outer.width * (right-left);
+		camera.height = outer.height * (bottom-top);
 		camera.updateProjectionMatrix();
 	}
 
@@ -76,7 +72,7 @@ function PanZoomRegion(opts) {
 
 		contain();
 
-		setCamera();
+		if(autoSetCamera) setCamera();
 	}
 
 	function zoom(x, y, zoom) {
@@ -93,7 +89,7 @@ function PanZoomRegion(opts) {
 		contain();
 
 		this.zoomValue *= zoom;
-		setCamera();
+		if(autoSetCamera) setCamera();
 	}
 
 
@@ -110,7 +106,7 @@ function PanZoomRegion(opts) {
 		top = 0;
 		bottom = 1;
 
-		setCamera();
+		if(autoSetCamera) setCamera();
 	}
 
 	this.pan = pan;

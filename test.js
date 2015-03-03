@@ -8,7 +8,7 @@ function onReady() {
 
 	var view = new View();
 	view.renderer.setClearColor(0xffafaf);
-	// view.renderManager.skipFrames = 10;
+	view.renderManager.skipFrames = 10;
 	var scene = view.scene;
 	var camera = view.camera;
 	camera.rotation.set(0, 0, 0);
@@ -35,7 +35,8 @@ function onReady() {
 		fovMax: 60,
 		panSpeed: .2,
 		pointers: pointers,
-		mouseWheel: MouseWheel
+		mouseWheel: MouseWheel,
+		autoSetCamera: false
 	});
 	controller.setState(true);
 
@@ -43,8 +44,24 @@ function onReady() {
 	var size = view.getSize();
 	controller.setSize(size.width, size.height);
 
+	var otherCamera = new THREE.PerspectiveCamera();
+	otherCamera.updateProjectionMatrix();
+
+	function setOtherCameraSize(w, h) {
+		otherCamera.setViewOffset(
+			w, 
+			h, 
+			w * 0.25, 
+			h * 0.25, 
+			w * 0.5, 
+			h * 0.5
+		);
+	}
+	setOtherCameraSize(size.width, size.height);
+	view.onResizeSignal.add(setOtherCameraSize);
 
 	view.renderManager.onEnterFrame.add(function(){
+		controller.precomposeViewport(otherCamera);
 	})
 
 }

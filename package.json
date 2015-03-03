@@ -14,10 +14,12 @@
     "signals": "^1.0.0"
   },
   "devDependencies": {
-    "loadandrunscripts": "^1.0.0",
-    "threejs-managed-view": "^4.0.1",
+    "canvas-valueovertimegraph": "^1.0.0",
+    "helper-value-getter-setter": "^1.0.0",
     "input-mousewheel": "^1.0.0",
-    "input-unified-pointers": "^2.1.3"
+    "input-unified-pointers": "^2.1.3",
+    "loadandrunscripts": "^1.0.0",
+    "threejs-managed-view": "^4.0.1"
   },
   "scripts": {
     "test": "beefy test.js --live --open"

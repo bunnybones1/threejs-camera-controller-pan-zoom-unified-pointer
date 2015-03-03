@@ -14,7 +14,8 @@ function Controller(opts) {
 
 	var panZoomRegion = new PanZoomRegion({
 		camera: camera,
-		zoomMax: zoomMax
+		zoomMax: zoomMax,
+		autoSetCamera: opts.autoSetCamera
 	});
 
 
