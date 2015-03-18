@@ -115,6 +115,7 @@ function Controller(opts) {
 		onMouseWheelSignal[op](onMouseWheelZoom);
 		if(!state) {
 			_panning = false;
+			while(activePointers.length > 0) activePointers.splice(0, 1);
 		}
 	}
 
