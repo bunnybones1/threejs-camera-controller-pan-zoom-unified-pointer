@@ -135,6 +135,6 @@ function Controller(opts) {
 	this.zoomSignal = regionController.zoomSignal;
 	this.setState = setState;
 	this.onPointerDown = regionController.onPointerDown;
-	
+	this.isPanning = regionController.isPanning;
 }
 module.exports = Controller;

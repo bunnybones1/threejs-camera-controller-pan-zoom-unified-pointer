@@ -3,6 +3,7 @@ function Controller(opts) {
 	var pointers = opts.pointers;
 	var onMouseWheelSignal = opts.mouseWheel ? opts.mouseWheel.onMouseWheelSignal : null;
 
+	var _panning = false;
 	var panSignal = new Signal();
 	var zoomSignal = new Signal();
 
@@ -23,6 +24,7 @@ function Controller(opts) {
 		if(activePointers.length >= 2) return;
 		positions[id*2] = x;
 		positions[id*2+1] = y;
+		_panning = true;
 
 		activePointers.push(id);
 	}
@@ -82,6 +84,7 @@ function Controller(opts) {
 		positions[id*2+1] = y;
 		var index = activePointers.indexOf(id);
 		if(index !== -1) activePointers.splice(index);
+		_panning = false;
 	}
 
 	function onMouseWheelZoom(delta) {
@@ -111,7 +114,12 @@ function Controller(opts) {
 			pointers.onPointerDragSignal.remove(onPointerDrag);
 			pointers.onPointerUpSignal.remove(onPointerUp);
 			onMouseWheelSignal.remove(onMouseWheelZoom);
+			_panning = false;
 		}
+	}
+
+	function isPanning() {
+		return _panning;
 	}
 
 	this.panSignal = panSignal;
@@ -120,5 +128,6 @@ function Controller(opts) {
 	this.zoomSignal = zoomSignal;
 	this.setState = setState;
 	this.onPointerDown = onPointerDown;
+	this.isPanning = isPanning;
 }
 module.exports = Controller;
