@@ -79,6 +79,10 @@ function Controller(opts) {
 		positions[indexAy] = y;
 	}
 
+	function onMouseOut(x, y) {
+		onPointerUp(x, y, pointers.mouseID);
+	}
+
 	function onPointerUp(x, y, id) {
 		positions[id*2] = x;
 		positions[id*2+1] = y;
@@ -102,18 +106,14 @@ function Controller(opts) {
 	function setState(state) {
 		if(state === active) return;
 		active = state;
-		if(state) {
-			pointers.onPointerDownSignal.add(onPointerDown);
-			pointers.onPointerMoveSignal.add(onPointerMove);
-			pointers.onPointerDragSignal.add(onPointerDrag);
-			pointers.onPointerUpSignal.add(onPointerUp);
-			onMouseWheelSignal.add(onMouseWheelZoom);
-		} else {
-			pointers.onPointerDownSignal.remove(onPointerDown);
-			pointers.onPointerMoveSignal.remove(onPointerMove);
-			pointers.onPointerDragSignal.remove(onPointerDrag);
-			pointers.onPointerUpSignal.remove(onPointerUp);
-			onMouseWheelSignal.remove(onMouseWheelZoom);
+		var op = state ? 'add' : 'remove';
+		pointers.onPointerDownSignal[op](onPointerDown);
+		pointers.onPointerMoveSignal[op](onPointerMove);
+		pointers.onPointerDragSignal[op](onPointerDrag);
+		pointers.onPointerUpSignal[op](onPointerUp);
+		pointers.mouse.onOutSignal[op](onMouseOut);
+		onMouseWheelSignal[op](onMouseWheelZoom);
+		if(!state) {
 			_panning = false;
 		}
 	}

@@ -101,7 +101,7 @@ function Controller(opts) {
 		gsap.killTweensOf(this);
 		if(animate) {
 			this.animationValue = 0;
-			gsap.to(this, 2, {
+			gsap.to(camera, 2, {
 				fov: fovMax,
 				onUpdate: function() {
 					zoomFov(
