@@ -1,6 +1,6 @@
 {
   "name": "threejs-camera-controller-pan-zoom-unified-pointer",
-  "version": "1.5.1",
+  "version": "2.0.0",
   "description": "A controller to pan and zoom a camera via a mouse or touch controls",
   "main": "index.js",
   "license": "MIT",
