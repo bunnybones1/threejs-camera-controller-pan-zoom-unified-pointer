@@ -28,6 +28,7 @@ function onReady() {
 	};
 
 	var pointers = new Pointers(view.canvas);
+	var mouseWheel = new MouseWheel(view.canvas);
 
 	var controller = new Controller({
 		camera: camera,
@@ -35,7 +36,7 @@ function onReady() {
 		fovMax: 60,
 		panSpeed: .2,
 		pointers: pointers,
-		mouseWheel: MouseWheel,
+		mouseWheel: mouseWheel,
 		autoSetCamera: false
 	});
 	controller.setState(true);

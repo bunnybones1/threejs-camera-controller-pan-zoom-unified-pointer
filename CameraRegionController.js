@@ -1,7 +1,7 @@
 var Signal = require('signals').Signal;
 function Controller(opts) {
 	var pointers = opts.pointers;
-	var onMouseWheelSignal = opts.mouseWheel ? opts.mouseWheel.onMouseWheelSignal : null;
+	var onMouseWheelSignal = opts.mouseWheel ? opts.mouseWheel.onWheelSignal : null;
 
 	var _panning = false;
 	var panSignal = new Signal();
