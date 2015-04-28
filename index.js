@@ -1,5 +1,6 @@
 var CameraRegionController = require('./CameraRegionController');
 var PanZoomRegion = require('./PanZoomRegion');
+var Signal = require('signals').Signal;
 var gsap = require('gsap');
 var INTERNAL = 0,
 	EXTERNAL = 1;
@@ -11,6 +12,7 @@ function Controller(opts) {
 	var panSpeed = panSpeed || 0.2;
 	var zoomMax = zoomMax || 0.2;
 
+	var zoomSignal = new Signal();
 
 	var panZoomRegion = new PanZoomRegion({
 		camera: camera,
@@ -59,6 +61,7 @@ function Controller(opts) {
 		}
 		currentZoomMode = mode;
 	}
+	var oldZoomFov = 0;
 	function zoomFov(x, y, zoom) {
 		camera.fov = camera.fov * zoom;
 		if(camera.fov < fovMin) changeZoomMode(INTERNAL);
@@ -67,8 +70,11 @@ function Controller(opts) {
 
 		// console.log('fov', camera.fov);
 		camera.updateProjectionMatrix();
+		if(oldZoomFov != camera.fov) zoomSignal.dispatch();
+		oldZoomFov = camera.fov;
 	}
 
+	var oldZoomPan = 0;
 	function zoomRegion(x, y, zoom, invertOut) {
 		if(invertOut && zoom > 1) {
 			x = fullWidth - x;
@@ -78,6 +84,8 @@ function Controller(opts) {
 		if(panZoomRegion.zoomValue > 1) changeZoomMode(EXTERNAL);
 		panZoomRegion.zoomValue = Math.min(1, panZoomRegion.zoomValue);
 		// console.log('regionZoom', panZoomRegion.zoomValue);
+		if(oldZoomPan != panZoomRegion.zoomValue) zoomSignal.dispatch();
+		oldZoomPan = panZoomRegion.zoomValue;
 	}
 
 	function precomposeViewport(otherCamera){
@@ -132,7 +140,7 @@ function Controller(opts) {
 	this.setSize = setSize;
 	this.precomposeViewport = precomposeViewport;
 	this.panSignal = regionController.panSignal;
-	this.zoomSignal = regionController.zoomSignal;
+	this.zoomSignal = zoomSignal;
 	this.setState = setState;
 	this.onPointerDown = regionController.onPointerDown;
 	this.isPanning = regionController.isPanning;
