@@ -132,6 +132,8 @@ function Controller(opts) {
 			});
 		} else {
 			panZoomRegion.reset();
+			panSignal.dispatch();
+			zoomSignal.dispatch();
 			camera.fov = fovMax;
 			camera.updateProjectionMatrix();
 		}
