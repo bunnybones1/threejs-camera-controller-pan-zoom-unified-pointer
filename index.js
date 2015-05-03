@@ -131,10 +131,21 @@ function Controller(opts) {
 				onUpdateScope: this
 			});
 		} else {
-			panZoomRegion.reset();
-			camera.fov = fovMax;
-			camera.updateProjectionMatrix();
-			zoomSignal.dispatch();
+			for(var i = 0; i < 3; i++) {
+				zoomRegion(
+					fullWidth * .5,
+					fullHeight * .5,
+					1 + (1-panZoomRegion.zoomValue) + .00001
+				);
+
+				camera.fov = fovMax;
+				zoomFov(
+					fullWidth * .5,
+					fullHeight * .5,
+					1
+				);
+			}
+
 		}
 	}
 

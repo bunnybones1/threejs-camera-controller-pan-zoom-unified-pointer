@@ -77,7 +77,7 @@ function PanZoomRegion(opts) {
 
 	function zoom(x, y, zoom) {
 		if(this.zoomValue <= zoomMax && zoom < 1) return;
-		zoom = Math.min(1.333, Math.max(0.75, zoom));
+		zoom = Math.min(50, Math.max(0.01, zoom));
 		var ratioX = x / fullWidth;
 		var ratioY = y / fullHeight;
 		var focusX = left + ratioX * (right - left);
