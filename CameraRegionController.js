@@ -5,6 +5,7 @@ function Controller(opts) {
 
 	var _panning = false;
 	var _pinchEnabled = true;
+	var _wheelEnabled = true;
 	var panSignal = new Signal();
 	var zoomSignal = new Signal();
 
@@ -98,6 +99,7 @@ function Controller(opts) {
 	}
 
 	function onMouseWheelZoom(delta) {
+		if (!_wheelEnabled) return;
 		zoomSignal.dispatch(
 			mousePosition[0], 
 			mousePosition[1], 
@@ -137,6 +139,14 @@ function Controller(opts) {
 		return _pinchEnabled;
 	}
 
+	function setWheelEnabled(bool) {
+		_wheelEnabled = bool;
+	}
+
+	function isWheelEnabled() {
+		return _wheelEnabled
+	}
+
 	this.panSignal = panSignal;
 	this.zoomSignal = zoomSignal;
 	this.panSignal = panSignal;
@@ -146,5 +156,7 @@ function Controller(opts) {
 	this.isPanning = isPanning;
 	this.setPinchEnabled = setPinchEnabled;
 	this.isPinchEnabled = isPinchEnabled;
+	this.setWheelEnabled = setWheelEnabled;
+	this.isWheelEnabled = isWheelEnabled;
 }
 module.exports = Controller;

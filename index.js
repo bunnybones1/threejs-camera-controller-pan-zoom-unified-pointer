@@ -158,5 +158,7 @@ function Controller(opts) {
 	this.isPanning = regionController.isPanning;
 	this.setPinchEnabled = regionController.setPinchEnabled.bind(regionController);
 	this.isPinchEnabled = regionController.isPinchEnabled.bind(regionController);
+	this.setWheenEnabled = regionController.setWheenEnabled.bind(regionController);
+	this.isWheelEnabled = regionController.isWheelEnabled.bind(regionController);
 }
 module.exports = Controller;
