@@ -10,7 +10,7 @@
     "url": "https://github.com/bunnybones1"
   },
   "dependencies": {
-    "gsap": "^1.16.0",
+    "gsap": "1.18.0",
     "signals": "^1.0.0"
   },
   "devDependencies": {
