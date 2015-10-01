@@ -4,6 +4,8 @@ function Controller(opts) {
 	var onMouseWheelSignal = opts.mouseWheel ? opts.mouseWheel.onWheelSignal : null;
 
 	var _panning = false;
+	var _pinchEnabled = true;
+	var _wheelEnabled = true;
 	var panSignal = new Signal();
 	var zoomSignal = new Signal();
 
@@ -47,7 +49,12 @@ function Controller(opts) {
 		if(activePointers.indexOf(id) === -1) return;
 		indexAx = id*2;
 		indexAy = indexAx+1;
-		switch(activePointers.length) {
+		var activeFingers = activePointers.length;
+		if (!_pinchEnabled) {
+			activeFingers = 1; // only allow panning
+		}
+
+		switch(activeFingers) {
 			case 1:
 				panSignal.dispatch(
 					positions[id*2] - x,
@@ -92,6 +99,7 @@ function Controller(opts) {
 	}
 
 	function onMouseWheelZoom(delta) {
+		if (!_wheelEnabled) return;
 		zoomSignal.dispatch(
 			mousePosition[0], 
 			mousePosition[1], 
@@ -123,6 +131,22 @@ function Controller(opts) {
 		return _panning;
 	}
 
+	function setPinchEnabled(bool) {
+		_pinchEnabled = bool;
+	}
+
+	function isPinchEnabled() {
+		return _pinchEnabled;
+	}
+
+	function setWheelEnabled(bool) {
+		_wheelEnabled = bool;
+	}
+
+	function isWheelEnabled() {
+		return _wheelEnabled
+	}
+
 	this.panSignal = panSignal;
 	this.zoomSignal = zoomSignal;
 	this.panSignal = panSignal;
@@ -130,5 +154,9 @@ function Controller(opts) {
 	this.setState = setState;
 	this.onPointerDown = onPointerDown;
 	this.isPanning = isPanning;
+	this.setPinchEnabled = setPinchEnabled;
+	this.isPinchEnabled = isPinchEnabled;
+	this.setWheelEnabled = setWheelEnabled;
+	this.isWheelEnabled = isWheelEnabled;
 }
 module.exports = Controller;
