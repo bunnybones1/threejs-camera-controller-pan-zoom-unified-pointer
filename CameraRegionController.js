@@ -1,4 +1,5 @@
 var Signal = require('signals').Signal;
+var clamp = require('clamp');
 function Controller(opts) {
 	var pointers = opts.pointers;
 	var onMouseWheelSignal = opts.mouseWheel ? opts.mouseWheel.onWheelSignal : null;
@@ -15,7 +16,7 @@ function Controller(opts) {
 	var positions = [];
 	for (var i = 0; i < 100; i++) {
 		positions.push(0, 0);
-	};
+	}
 
 	function onPointerDown(x, y, id) {
 		if(activePointers.indexOf(id) !== -1) return;
@@ -65,8 +66,8 @@ function Controller(opts) {
 				indexBx = (id*2+2)%4;
 				indexBy = indexBx+1;
 				panSignal.dispatch(
-					(positions[indexAx] - x) * .5,
-					(positions[indexAy] - y) * .5
+					(positions[indexAx] - x) * 0.5,
+					(positions[indexAy] - y) * 0.5
 				);
 				var zoom = len(
 						positions[indexAx] - positions[indexBx], 
@@ -76,8 +77,8 @@ function Controller(opts) {
 						y - positions[indexBy]
 					);
 				zoomSignal.dispatch(
-					(positions[0] + positions[2]) * .5,
-					(positions[1] + positions[3]) * .5,
+					(positions[0] + positions[2]) * 0.5,
+					(positions[1] + positions[3]) * 0.5,
 					zoom
 				);
 				break;
@@ -98,12 +99,12 @@ function Controller(opts) {
 		_panning = false;
 	}
 
-	function onMouseWheelZoom(delta) {
+	function onMouseWheelZoom(deltaX, deltaY, event) {
 		if (!_wheelEnabled) return;
 		zoomSignal.dispatch(
 			mousePosition[0], 
 			mousePosition[1], 
-			(3000 + delta) / 3000,
+			clamp((3000 + deltaY) / 3000, 0.8, 1.2),
 			true
 		);
 	}

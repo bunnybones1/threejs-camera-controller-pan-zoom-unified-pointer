@@ -10,7 +10,9 @@
     "url": "https://github.com/bunnybones1"
   },
   "dependencies": {
+    "clamp": "^1.0.1",
     "gsap": "1.17.0",
+    "input-mousewheel": "^3.0.0",
     "signals": "^1.0.0"
   },
   "devDependencies": {
