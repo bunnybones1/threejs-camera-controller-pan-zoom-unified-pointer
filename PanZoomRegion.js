@@ -98,7 +98,7 @@ function PanZoomRegion(opts) {
 		fullWidth = w;
 		fullHeight = h;
 		height = h / w;
-		setCamera();
+		if(autoSetCamera) setCamera();
 	}
 
 	function reset() {
