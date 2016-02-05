@@ -5,18 +5,22 @@ function onReady() {
 	var Pointers = require('input-unified-pointers');
 	var MouseWheel = require('input-mousewheel');
 	var Controller = require('./');
+	var gsap = require('gsap');
 
 	var view = new View();
 	view.renderer.setClearColor(0xffafaf);
-	view.renderManager.skipFrames = 10;
+
+	// console.warn('NOTE: skipping frames to save battery life while developing while travelling ;). target is 6fps.');
+	// view.renderManager.skipFrames = 10;
+
 	var scene = view.scene;
 	var camera = view.camera;
 	camera.rotation.set(0, 0, 0);
 
 	var total = 1000;
 	var range = 100;
-	var rangeHalf = range * .5;
-	var ballGeometry = new THREE.SphereGeometry(.5, 32, 16);
+	var rangeHalf = range * 0.5;
+	var ballGeometry = new THREE.SphereGeometry(0.5, 32, 16);
 	for (var i = 0; i < total; i++) {
 		var ball = new THREE.Mesh(ballGeometry);
 		ball.position.set(
@@ -25,16 +29,17 @@ function onReady() {
 			Math.random() * range - rangeHalf
 		);
 		scene.add(ball);
-	};
+	}
 
 	var pointers = new Pointers(view.canvas);
 	var mouseWheel = new MouseWheel(view.canvas);
 
 	var controller = new Controller({
 		camera: camera,
+		tweener: gsap,
 		fovMin: 50,
 		fovMax: 60,
-		panSpeed: .2,
+		panSpeed: 0.2,
 		pointers: pointers,
 		mouseWheel: mouseWheel,
 		autoSetCamera: false
@@ -63,7 +68,7 @@ function onReady() {
 
 	view.renderManager.onEnterFrame.add(function(){
 		controller.precomposeViewport(otherCamera);
-	})
+	});
 
 }
 loadAndRunScripts([

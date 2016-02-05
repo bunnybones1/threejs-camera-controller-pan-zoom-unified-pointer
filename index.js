@@ -1,12 +1,12 @@
 var CameraRegionController = require('./CameraRegionController');
 var PanZoomRegion = require('./PanZoomRegion');
 var Signal = require('signals').Signal;
-var gsap = require('gsap');
 var INTERNAL = 0,
 	EXTERNAL = 1;
 
 function Controller(opts) {
 	var camera = opts.camera;
+	var tweener = opts.tweener;
 	var fovMin = opts.fovMin || 50;
 	var fovMax = opts.fovMax || 60;
 	var panSpeed = panSpeed || 0.2;
@@ -105,27 +105,27 @@ function Controller(opts) {
 
 	this.animationValue = 0;
 	this.reset = function(animate) {
-		gsap.killTweensOf(camera);
-		gsap.killTweensOf(this);
+		tweener.killTweensOf(camera);
+		tweener.killTweensOf(this);
 		if(animate) {
 			this.animationValue = 0;
-			gsap.to(camera, 2, {
+			tweener.to(camera, 2, {
 				fov: fovMax,
 				onUpdate: function() {
 					zoomFov(
-						fullWidth * .5,
-						fullHeight * .5,
+						fullWidth * 0.5,
+						fullHeight * 0.5,
 						1
 					);
 				}
-			})
-			gsap.to(this, 2, {
+			});
+			tweener.to(this, 2, {
 				animationValue: 1,
 				onUpdate: function() {
 					zoomRegion(
-						fullWidth * .5,
-						fullHeight * .5,
-						1 + (this.animationValue * (1-panZoomRegion.zoomValue)) + .00001
+						fullWidth * 0.5,
+						fullHeight * 0.5,
+						1 + (this.animationValue * (1-panZoomRegion.zoomValue)) + 0.00001
 					);
 				},
 				onUpdateScope: this
@@ -133,21 +133,21 @@ function Controller(opts) {
 		} else {
 			for(var i = 0; i < 3; i++) {
 				zoomRegion(
-					fullWidth * .5,
-					fullHeight * .5,
-					1 + (1-panZoomRegion.zoomValue) + .00001
+					fullWidth * 0.5,
+					fullHeight * 0.5,
+					1 + (1-panZoomRegion.zoomValue) + 0.00001
 				);
 
 				camera.fov = fovMax;
 				zoomFov(
-					fullWidth * .5,
-					fullHeight * .5,
+					fullWidth * 0.5,
+					fullHeight * 0.5,
 					1
 				);
 			}
 
 		}
-	}
+	};
 
 	this.setSize = setSize;
 	this.precomposeViewport = precomposeViewport;
