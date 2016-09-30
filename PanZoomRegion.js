@@ -18,23 +18,24 @@ function PanZoomRegion(opts) {
 
 	function setCamera() {
 		camera.setViewOffset(
-			width, 
-			height, 
-			left, 
-			top * height, 
+			width,
+			height,
+			left,
+			top * height,
 			right-left,
 			(bottom-top) * height
 		);
 	}
 
 	function precomposeViewport(outer) {
-		camera.fullWidth = outer.fullWidth;
-		camera.fullHeight = outer.fullHeight;
-		camera.x = outer.x + left * outer.width;
-		camera.y = outer.y + top * outer.height;
-		camera.width = outer.width * (right-left);
-		camera.height = outer.height * (bottom-top);
-		camera.updateProjectionMatrix();
+		camera.setViewOffset(
+			outer.view.fullWidth,
+			outer.view.fullHeight,
+			outer.view.offsetX + left * outer.view.width,
+			outer.view.offsetY + top * outer.view.height,
+			outer.view.width * (right-left),
+			outer.view.height * (bottom-top)
+		);
 	}
 
 	function contain() {
