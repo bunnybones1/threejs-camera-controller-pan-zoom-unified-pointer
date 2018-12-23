@@ -9,8 +9,8 @@ function Controller(opts) {
 	var tweener = opts.tweener;
 	var fovMin = opts.fovMin || 50;
 	var fovMax = opts.fovMax || 60;
-	var panSpeed = panSpeed || 0.2;
-	var zoomMax = zoomMax || 0.2;
+	var panSpeed = opts.panSpeed || 0.2;
+	var zoomMax = opts.zoomMax || 0.2;
 
 	var zoomSignal = new Signal();
 
@@ -27,8 +27,8 @@ function Controller(opts) {
 	});
 
 	function _panMovement(x, y) {
-		camera.position.x += x * panSpeed;
-		camera.position.y += -y * panSpeed;
+		camera.translateX(x * panSpeed);
+		camera.translateY(-y * panSpeed);
 	}
 	
 	var panMovement = opts.panMap || _panMovement;
@@ -160,5 +160,6 @@ function Controller(opts) {
 	this.isPinchEnabled = regionController.isPinchEnabled.bind(regionController);
 	this.setWheelEnabled = regionController.setWheelEnabled.bind(regionController);
 	this.isWheelEnabled = regionController.isWheelEnabled.bind(regionController);
+	this.panZoomRegion = panZoomRegion;
 }
 module.exports = Controller;
