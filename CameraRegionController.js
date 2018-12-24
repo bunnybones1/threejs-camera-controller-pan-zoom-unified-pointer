@@ -6,6 +6,7 @@ function Controller(opts) {
 
 	var _panning = false;
 	var _pinchEnabled = true;
+	var _singleFingerPanEnabled = opts.singleFingerPanEnabled !== undefined ? opts.singleFingerPanEnabled : true;
 	var _wheelEnabled = true;
 	var panSignal = new Signal();
 	var zoomSignal = new Signal();
@@ -57,10 +58,12 @@ function Controller(opts) {
 
 		switch(activeFingers) {
 			case 1:
-				panSignal.dispatch(
-					positions[id*2] - x,
-					positions[id*2+1] - y
-				);
+				if(_singleFingerPanEnabled) {
+					panSignal.dispatch(
+						positions[id*2] - x,
+						positions[id*2+1] - y
+					);
+				}
 				break;
 			case 2:
 				indexBx = (id*2+2)%4;
@@ -70,12 +73,12 @@ function Controller(opts) {
 					(positions[indexAy] - y) * 0.5
 				);
 				var zoom = len(
-						positions[indexAx] - positions[indexBx], 
-						positions[indexAy] - positions[indexBy]
-					) / len(
-						x - positions[indexBx], 
-						y - positions[indexBy]
-					);
+					positions[indexAx] - positions[indexBx], 
+					positions[indexAy] - positions[indexBy]
+				) / len(
+					x - positions[indexBx], 
+					y - positions[indexBy]
+				);
 				zoomSignal.dispatch(
 					(positions[0] + positions[2]) * 0.5,
 					(positions[1] + positions[3]) * 0.5,
@@ -140,6 +143,14 @@ function Controller(opts) {
 		return _pinchEnabled;
 	}
 
+	function setSingleFingerPanEnabled(bool) {
+		_singleFingerPanEnabled = bool;
+	}
+
+	function isSingleFingerPanEnabled() {
+		return _singleFingerPanEnabled;
+	}
+
 	function setWheelEnabled(bool) {
 		_wheelEnabled = bool;
 	}
@@ -157,7 +168,10 @@ function Controller(opts) {
 	this.isPanning = isPanning;
 	this.setPinchEnabled = setPinchEnabled;
 	this.isPinchEnabled = isPinchEnabled;
+	this.setSingleFingerPanEnabled = setSingleFingerPanEnabled;
+	this.isSingleFingerPanEnabled = isSingleFingerPanEnabled;
 	this.setWheelEnabled = setWheelEnabled;
 	this.isWheelEnabled = isWheelEnabled;
+	this.activePointers = activePointers;
 }
 module.exports = Controller;

@@ -11,6 +11,8 @@ function Controller(opts) {
 	var fovMax = opts.fovMax || 60;
 	var panSpeed = opts.panSpeed || 0.2;
 	var zoomMax = opts.zoomMax || 0.2;
+	var pointers = opts.pointers;
+
 
 	var zoomSignal = new Signal();
 
@@ -22,8 +24,9 @@ function Controller(opts) {
 
 
 	var regionController = new CameraRegionController({
-		pointers: opts.pointers,
-		mouseWheel: opts.mouseWheel
+		pointers: pointers,
+		mouseWheel: opts.mouseWheel,
+		singleFingerPanEnabled: opts.singleFingerPanEnabled
 	});
 
 	function _panMovement(x, y) {
